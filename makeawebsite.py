@@ -1,8 +1,7 @@
-'''
-Created on Jul 16, 2015
-
-@author: taapesh
-'''
+"""
+It's magic...
+"""
+# Imports
 import os
 import subprocess
 
@@ -52,12 +51,11 @@ REPLACE_SECRET_KEY      = "<REPLACE_SECRET_KEY>"
 REPLACE_PROJECT_NAME    = "<REPLACE_PROJECT_NAME>"
 REPLACE_APP_NAME        = "<REPLACE_APP_NAME>"
 
-# CDNs for popular js and css
+# CDNs for popular js and css, use these when possible, local versions as a backup
 JQUERY_CDN          = "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
 BOOTSTRAP_CSS_CDN   = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
 BOOTSTRAP_JS_CDN    = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
 FONT_AWESOME_CDN    = "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
-
 
 
 def initsetup():
