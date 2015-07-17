@@ -59,13 +59,14 @@ BOOTSTRAP_JS_CDN    = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootst
 FONT_AWESOME_CDN    = "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
 
 
-# Create virtualenv and django project/app
+
 def initsetup():
+    """ Create virtualenv and django project/app """
     command = "source " + INIT_SCRIPT + " " + VENV_NAME + " " + PROJECT_NAME + " " + APP_NAME
     subprocess.call(command, shell=True)
 
-# Modify django settings to match Heroku requirements
 def modify_settings():
+    """ Modify django settings to match Heroku requirements """
     settings_file = open(os.path.expanduser(PROJECT_PATH + DJANGO_SETTINGS_FNAME), "r")
     lines = settings_file.readlines()
     settings_file.close()
@@ -122,22 +123,22 @@ def modify_settings():
     copy_file.close()
     init_file.close()
 
-# Create and write a Procfile for Heroku
 def create_procfile():
+    """ Create and write a Procfile for Heroku """
     procfile = open(os.path.expanduser(PROJECT_ROOT + "Procfile"), "w+")
     procfile.write("web: gunicorn " + PROJECT_NAME + ".wsgi")
     procfile.close()
 
-# Modify wsgi to include dj_static for serving static files in production
 def modify_wsgi():
+    """ Modify wsgi to include dj_static for serving static files in production """
     wsgi_file = open(os.path.expanduser(PROJECT_PATH + "wsgi.py"), "w")
     copy_file = open(COPY_WSGI, "r")
     wsgi_file.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
     copy_file.close()
     wsgi_file.close()
 
-# Create a gitignore file
 def create_gitignore():
+    """ Create a gitignore file """
     gitignore = open(os.path.expanduser(PROJECT_ROOT + ORIGINAL_GITIGNORE), "w+")
     copy_file = open(GITIGNORE_SAMPLE, "r")
     gitignore.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
@@ -146,44 +147,44 @@ def create_gitignore():
     copy_file.close()
     gitignore.close()
 
-# Freeze project dependencies into requirements.txt
 def setup_requirements():
+    """ Freeze project dependencies into requirements.txt """
     command = "source " + REQUIREMENTS_SCRIPT + " " + VENV_ROOT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
-# Create templates directory and create initial home.html template
 def create_templates():
+    """ Create templates directory and create initial home.html template """
     command = "source " + TEMPLATES_SCRIPT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
-# Setup static directory and subdirectories
 def setup_static():
+    """ Setup static directory and subdirectories """
     command = "source " + STATIC_SCRIPT + " " + APP_PATH
     subprocess.call(command, shell=True)
 
-# Add new views to views.py
 def add_views():
+    """ Add new views to views.py """
     views_file = open(os.path.expanduser(APP_PATH + "views.py"), "w")
     copy_file = open(COPY_VIEWS, "r")
     views_file.write(copy_file.read())
     copy_file.close()
     views_file.close()
-	
-# Add new urls to urls.py
+
 def add_urls():
+    """ Add new urls to urls.py """
     urls_file = open(os.path.expanduser(PROJECT_PATH + "urls.py"), "w")
     copy_file = open(COPY_URLS, "r")
     urls_file.write(copy_file.read().replace(REPLACE_APP_NAME, APP_NAME))
     copy_file.close()
     urls_file.close()
 
-# Initialize git repository, add files, and make first commit
 def setup_git():
+    """ Initialize git repository, add files, and make first commit """
     command = "source " + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
-# Create a heroku app and deploy using git
 def heroku_create():
+    """ Create a heroku app and deploy using git """
     command = "source " + HEROKU_CREATE_SCRIPT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
