@@ -7,33 +7,33 @@ import os
 import subprocess
 
 # Testing
-VENV_NAME		= "testvenv"
-PROJECT_NAME	= "proj"
-APP_NAME 		= "app"
+VENV_NAME       = "testvenv"
+PROJECT_NAME    = "proj"
+APP_NAME        = "app"
 
 # Project paths
-VENV_ROOT 		= "~/Desktop/" + VENV_NAME + "/"
-PROJECT_ROOT 	= "~/Desktop/" + VENV_NAME + "/" + PROJECT_NAME + "/"
-PROJECT_PATH 	= PROJECT_ROOT + PROJECT_NAME + "/"
-APP_PATH 		= PROJECT_ROOT + APP_NAME + "/"
-SETTINGS_PATH	= PROJECT_PATH + "settings/"
+VENV_ROOT       = "~/Desktop/" + VENV_NAME + "/"
+PROJECT_ROOT    = "~/Desktop/" + VENV_NAME + "/" + PROJECT_NAME + "/"
+PROJECT_PATH    = PROJECT_ROOT + PROJECT_NAME + "/"
+APP_PATH        = PROJECT_ROOT + APP_NAME + "/"
+SETTINGS_PATH   = PROJECT_PATH + "settings/"
 
 # File names to copy
-COPY_FOLDER					= "copy_files/"
-COPY_BASE_SETTINGS			= COPY_FOLDER + "base_settings.txt"
-COPY_PRODUCTION_SETTINGS	= COPY_FOLDER + "production_settings.txt"
-COPY_INIT_SETTINGS			= COPY_FOLDER + "init_settings.txt"
-COPY_WSGI					= COPY_FOLDER + "wsgi.txt"
-COPY_VIEWS					= COPY_FOLDER + "views.txt"
-COPY_URLS					= COPY_FOLDER + "urls.txt"
-GITIGNORE_SAMPLE			= COPY_FOLDER + "gitignore_sample.txt"
-ORIGINAL_GITIGNORE			= "gitignore.txt"
+COPY_FOLDER                 = "copy_files/"
+COPY_BASE_SETTINGS          = COPY_FOLDER + "base_settings.txt"
+COPY_PRODUCTION_SETTINGS    = COPY_FOLDER + "production_settings.txt"
+COPY_INIT_SETTINGS          = COPY_FOLDER + "init_settings.txt"
+COPY_WSGI                   = COPY_FOLDER + "wsgi.txt"
+COPY_VIEWS                  = COPY_FOLDER + "views.txt"
+COPY_URLS                   = COPY_FOLDER + "urls.txt"
+GITIGNORE_SAMPLE            = COPY_FOLDER + "gitignore_sample.txt"
+ORIGINAL_GITIGNORE          = "gitignore.txt"
 
 # Names of settings files in django project
-DJANGO_SETTINGS_FNAME 		= "settings.py"
-BASE_SETTINGS_FNAME 		= "base_settings.py"
-LOCAL_SETTINGS_FNAME 		= "local_settings.py"
-PRODUCTION_SETTINGS_FNAME 	= "production_settings.py"
+DJANGO_SETTINGS_FNAME       = "settings.py"
+BASE_SETTINGS_FNAME         = "base_settings.py"
+LOCAL_SETTINGS_FNAME        = "local_settings.py"
+PRODUCTION_SETTINGS_FNAME   = "production_settings.py"
 
 # Script names
 SCRIPT_FOLDER			= "bash_scripts/"
@@ -66,61 +66,61 @@ def initsetup():
 
 # Modify django settings to match Heroku requirements
 def modify_settings():
-	settings_file = open(os.path.expanduser(PROJECT_PATH + DJANGO_SETTINGS_FNAME), "r")
-	lines = settings_file.readlines()
-	settings_file.close()
-	
-	SECRET_KEY = ""
-	# Obtain project secret key
-	for line in lines:
-		if "SECRET_KEY" in line:
-			line = line.rstrip()
-			SECRET_KEY = line.split(" = ")[1]
-			break
+    settings_file = open(os.path.expanduser(PROJECT_PATH + DJANGO_SETTINGS_FNAME), "r")
+    lines = settings_file.readlines()
+    settings_file.close()
 
-	# Open new settings file and fill it in with project specs
-	copy_file = open(COPY_BASE_SETTINGS, "r")
-	new_settings = copy_file.read()
-	copy_file.close()
-	new_settings = new_settings.replace(REPLACE_SECRET_KEY, SECRET_KEY)
-	new_settings = new_settings.replace(REPLACE_APP_NAME, APP_NAME)
-	new_settings = new_settings.replace(REPLACE_PROJECT_NAME, PROJECT_NAME)
+    SECRET_KEY = ""
+    # Obtain project secret key
+    for line in lines:
+    	if "SECRET_KEY" in line:
+    		line = line.rstrip()
+    		SECRET_KEY = line.split(" = ")[1]
+    		break
 
-	# Write new settings to settings file
-	settings_file = open(os.path.expanduser(PROJECT_PATH + DJANGO_SETTINGS_FNAME), "w")
-	settings_file.write(new_settings)
-	settings_file.close()
+    # Open new settings file and fill it in with project specs
+    copy_file = open(COPY_BASE_SETTINGS, "r")
+    new_settings = copy_file.read()
+    copy_file.close()
+    new_settings = new_settings.replace(REPLACE_SECRET_KEY, SECRET_KEY)
+    new_settings = new_settings.replace(REPLACE_APP_NAME, APP_NAME)
+    new_settings = new_settings.replace(REPLACE_PROJECT_NAME, PROJECT_NAME)
 
-	# Build command to setup new settings directory
-	command = "source " + SETTINGS_SCRIPT + " " + PROJECT_PATH + " " + BASE_SETTINGS_FNAME + " " + LOCAL_SETTINGS_FNAME + " " + PRODUCTION_SETTINGS_FNAME
-	subprocess.call(command, shell=True)
+    # Write new settings to settings file
+    settings_file = open(os.path.expanduser(PROJECT_PATH + DJANGO_SETTINGS_FNAME), "w")
+    settings_file.write(new_settings)
+    settings_file.close()
 
-	# Write base settings file
-	base_settings_file = open(os.path.expanduser(SETTINGS_PATH + BASE_SETTINGS_FNAME), "w")
-	base_settings_file.write(new_settings)
-	base_settings_file.close()
+    # Build command to setup new settings directory
+    command = "source " + SETTINGS_SCRIPT + " " + PROJECT_PATH + " " + BASE_SETTINGS_FNAME + " " + LOCAL_SETTINGS_FNAME + " " + PRODUCTION_SETTINGS_FNAME
+    subprocess.call(command, shell=True)
 
-	# Write local settings file
-	local_settings_file = open(os.path.expanduser(SETTINGS_PATH + LOCAL_SETTINGS_FNAME), "w")
-	local_settings_file.write(new_settings)
-	local_settings_file.close()
-	
-	# Write production settings file
-	production_settings_file = open(os.path.expanduser(SETTINGS_PATH + PRODUCTION_SETTINGS_FNAME), "w")
-	copy_file = open(COPY_PRODUCTION_SETTINGS, "r")
-	new_settings = copy_file.read().replace(REPLACE_SECRET_KEY, SECRET_KEY)
-	new_settings = new_settings.replace(REPLACE_PROJECT_NAME, PROJECT_NAME)
-	new_settings = new_settings.replace(REPLACE_APP_NAME, APP_NAME)
-	production_settings_file.write(new_settings)
-	copy_file.close()
-	production_settings_file.close()
+    # Write base settings file
+    base_settings_file = open(os.path.expanduser(SETTINGS_PATH + BASE_SETTINGS_FNAME), "w")
+    base_settings_file.write(new_settings)
+    base_settings_file.close()
 
-	# Write __init__.py file
-	init_file = open(os.path.expanduser(SETTINGS_PATH + "__init__.py"), "w")
-	copy_file = open(COPY_INIT_SETTINGS, "r")
-	init_file.write(copy_file.read())
-	copy_file.close()
-	init_file.close()
+    # Write local settings file
+    local_settings_file = open(os.path.expanduser(SETTINGS_PATH + LOCAL_SETTINGS_FNAME), "w")
+    local_settings_file.write(new_settings)
+    local_settings_file.close()
+
+    # Write production settings file
+    production_settings_file = open(os.path.expanduser(SETTINGS_PATH + PRODUCTION_SETTINGS_FNAME), "w")
+    copy_file = open(COPY_PRODUCTION_SETTINGS, "r")
+    new_settings = copy_file.read().replace(REPLACE_SECRET_KEY, SECRET_KEY)
+    new_settings = new_settings.replace(REPLACE_PROJECT_NAME, PROJECT_NAME)
+    new_settings = new_settings.replace(REPLACE_APP_NAME, APP_NAME)
+    production_settings_file.write(new_settings)
+    copy_file.close()
+    production_settings_file.close()
+
+    # Write __init__.py file
+    init_file = open(os.path.expanduser(SETTINGS_PATH + "__init__.py"), "w")
+    copy_file = open(COPY_INIT_SETTINGS, "r")
+    init_file.write(copy_file.read())
+    copy_file.close()
+    init_file.close()
 
 # Create and write a Procfile for Heroku
 def create_procfile():
