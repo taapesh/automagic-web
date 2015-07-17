@@ -1,6 +1,6 @@
 .DS_Store
 db.sqlite3
-<REPLACE_PROJECT_NAME>/settings/local.py
+<REPLACE_PROJECT_NAME>/settings/local_settings.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

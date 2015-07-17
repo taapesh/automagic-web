@@ -44,6 +44,7 @@ TEMPLATES_SCRIPT 		= SCRIPT_FOLDER + "setup_templates.sh"
 SETTINGS_SCRIPT			= SCRIPT_FOLDER + "modify_settings.sh"
 GITIGNORE_SCRIPT		= SCRIPT_FOLDER + "finalize_gitignore.sh"
 GIT_SETUP_SCRIPT		= SCRIPT_FOLDER + "git_setup.sh"
+HEROKU_CREATE_SCRIPT	= SCRIPT_FOLDER + "heroku_create.sh"
 
 # Settings replace text
 REPLACE_SECRET_KEY 		= "<REPLACE_SECRET_KEY>"
@@ -97,7 +98,10 @@ def modify_settings():
 	# Write production settings file
 	production_settings_file = open(os.path.expanduser(SETTINGS_PATH + PRODUCTION_SETTINGS_FNAME), "w")
 	copy_file = open(COPY_PRODUCTION_SETTINGS, "r")
-	production_settings_file.write(copy_file.read())
+	new_settings = copy_file.read().replace(REPLACE_SECRET_KEY, SECRET_KEY)
+	new_settings = new_settings.replace(REPLACE_PROJECT_NAME, PROJECT_NAME)
+	new_settings = new_settings.replace(REPLACE_APP_NAME, APP_NAME)
+	production_settings_file.write(new_settings)
 	copy_file.close()
 	production_settings_file.close()
 
@@ -111,7 +115,7 @@ def modify_settings():
 # Create and write a Procfile for Heroku
 def create_procfile():
 	procfile = open(os.path.expanduser(PROJECT_ROOT + "Procfile"), "w+")
-	procfile.write("web: gunicorn " + APP_NAME + ".wsgi")
+	procfile.write("web: gunicorn " + PROJECT_NAME + ".wsgi")
 	procfile.close()
 
 # Modify wsgi to include dj_static for serving static files in production
@@ -158,8 +162,14 @@ def add_urls():
 	copy_file.close()
 	urls_file.close()
 
+# Initialize git repository, add files, and make first commit
 def setup_git():
 	command = "source " + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
+	subprocess.call(command, shell=True)
+
+# Create a heroku app and deploy using git
+def heroku_create():
+	command = "source " + HEROKU_CREATE_SCRIPT + " " + PROJECT_ROOT
 	subprocess.call(command, shell=True)
 
 def main():
@@ -174,5 +184,6 @@ def main():
 	add_urls()
 	create_gitignore()
 	setup_git()
+	heroku_create()
 	print "Done."
 main()
