@@ -6,16 +6,19 @@ import os
 import subprocess
 
 # Testing
+DEMO            = True
 VENV_NAME       = "testvenv"
 PROJECT_NAME    = "proj"
 APP_NAME        = "app"
 
 # Project paths
-VENV_ROOT       = "~/Desktop/" + VENV_NAME + "/"
-PROJECT_ROOT    = "~/Desktop/" + VENV_NAME + "/" + PROJECT_NAME + "/"
-PROJECT_PATH    = PROJECT_ROOT + PROJECT_NAME + "/"
-APP_PATH        = PROJECT_ROOT + APP_NAME + "/"
-SETTINGS_PATH   = PROJECT_PATH + "settings/"
+VENV_ROOT           = "~/Desktop/" + VENV_NAME + "/"
+PROJECT_ROOT        = "~/Desktop/" + VENV_NAME + "/" + PROJECT_NAME + "/"
+PROJECT_PATH        = PROJECT_ROOT + PROJECT_NAME + "/"
+APP_PATH            = PROJECT_ROOT + APP_NAME + "/"
+SETTINGS_PATH       = PROJECT_PATH + "settings/"
+STATIC_PATH         = APP_PATH + "static"
+TEMPLATES_PATH      = PROJECT_ROOT + "templates"
 
 # File names to copy
 COPY_FOLDER                 = "copy_files/"
@@ -27,6 +30,8 @@ COPY_VIEWS                  = COPY_FOLDER + "views.txt"
 COPY_URLS                   = COPY_FOLDER + "urls.txt"
 GITIGNORE_SAMPLE            = COPY_FOLDER + "gitignore_sample.txt"
 ORIGINAL_GITIGNORE          = "gitignore.txt"
+COPY_STATIC_FOLDER          = "template_builders/demo/static"
+COPY_TEMPLATES_FOLDER       = "template_builders/demo/templates"
 
 # Names of settings files in django project
 DJANGO_SETTINGS_FNAME       = "settings.py"
@@ -45,6 +50,7 @@ GITIGNORE_SCRIPT        = SCRIPT_FOLDER + "finalize_gitignore.sh"
 GIT_SETUP_SCRIPT        = SCRIPT_FOLDER + "git_setup.sh"
 HEROKU_CREATE_SCRIPT    = SCRIPT_FOLDER + "heroku_create.sh"
 STATIC_SCRIPT           = SCRIPT_FOLDER + "staticfiles_setup.sh"
+COPY_STATIC_SCRIPT      = SCRIPT_FOLDER + "copy_static.sh"
 
 # Settings replace text
 REPLACE_SECRET_KEY      = "<REPLACE_SECRET_KEY>"
@@ -159,6 +165,10 @@ def setup_static():
     """ Setup static directory and subdirectories """
     command = "source " + STATIC_SCRIPT + " " + APP_PATH
     subprocess.call(command, shell=True)
+
+    if DEMO:
+        command = "source " + COPY_STATIC_SCRIPT + " " + COPY_STATIC_FOLDER + " " + STATIC_PATH + " " + COPY_TEMPLATES_FOLDER + " " + TEMPLATES_PATH
+        subprocess.call(command, shell=True)
 
 def add_views():
     """ Add new views to views.py """
