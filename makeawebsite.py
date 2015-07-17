@@ -45,11 +45,19 @@ SETTINGS_SCRIPT			= SCRIPT_FOLDER + "modify_settings.sh"
 GITIGNORE_SCRIPT		= SCRIPT_FOLDER + "finalize_gitignore.sh"
 GIT_SETUP_SCRIPT		= SCRIPT_FOLDER + "git_setup.sh"
 HEROKU_CREATE_SCRIPT	= SCRIPT_FOLDER + "heroku_create.sh"
+STATIC_SCRIPT			= SCRIPT_FOLDER + "staticfiles_setup.sh"
 
 # Settings replace text
 REPLACE_SECRET_KEY 		= "<REPLACE_SECRET_KEY>"
 REPLACE_PROJECT_NAME 	= "<REPLACE_PROJECT_NAME>"
 REPLACE_APP_NAME 		= "<REPLACE_APP_NAME>"
+
+# CDNs for popular js and css
+JQUERY_CDN			= "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+BOOTSTRAP_CSS_CDN	= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+BOOTSTRAP_JS_CDN	= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+FONT_AWESOME_CDN	= "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+
 
 # Create virtualenv and django project/app
 def initsetup():
@@ -71,7 +79,9 @@ def modify_settings():
 			break
 
 	# Open new settings file and fill it in with project specs
-	new_settings = open(COPY_BASE_SETTINGS, "r").read()
+	copy_file = open(COPY_BASE_SETTINGS, "r")
+	new_settings = copy_file.read()
+	copy_file.close()
 	new_settings = new_settings.replace(REPLACE_SECRET_KEY, SECRET_KEY)
 	new_settings = new_settings.replace(REPLACE_APP_NAME, APP_NAME)
 	new_settings = new_settings.replace(REPLACE_PROJECT_NAME, PROJECT_NAME)
@@ -146,6 +156,11 @@ def create_templates():
 	command = "source " + TEMPLATES_SCRIPT + " " + PROJECT_ROOT
 	subprocess.call(command, shell=True)
 
+# Setup static directory and subdirectories
+def setup_static():
+	command = "source " + STATIC_SCRIPT + " " + APP_PATH
+	subprocess.call(command, shell=True)
+
 # Add new views to views.py
 def add_views():
 	views_file = open(os.path.expanduser(APP_PATH + "views.py"), "w")
@@ -180,10 +195,13 @@ def main():
 	modify_wsgi()
 	setup_requirements()
 	create_templates()
+	setup_static()
 	add_views()
 	add_urls()
 	create_gitignore()
 	setup_git()
 	heroku_create()
 	print "Done."
-main()
+
+if __name__ == "__main__":
+    main()
