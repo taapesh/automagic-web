@@ -36,27 +36,27 @@ LOCAL_SETTINGS_FNAME        = "local_settings.py"
 PRODUCTION_SETTINGS_FNAME   = "production_settings.py"
 
 # Script names
-SCRIPT_FOLDER			= "bash_scripts/"
-INIT_SCRIPT 			= SCRIPT_FOLDER + "init_setup.sh"
-CREATE_PROCFILE_SCRIPT 	= SCRIPT_FOLDER + "create_procfile.sh"
-REQUIREMENTS_SCRIPT 	= SCRIPT_FOLDER + "setup_requirements.sh"
-TEMPLATES_SCRIPT 		= SCRIPT_FOLDER + "setup_templates.sh"
-SETTINGS_SCRIPT			= SCRIPT_FOLDER + "modify_settings.sh"
-GITIGNORE_SCRIPT		= SCRIPT_FOLDER + "finalize_gitignore.sh"
-GIT_SETUP_SCRIPT		= SCRIPT_FOLDER + "git_setup.sh"
-HEROKU_CREATE_SCRIPT	= SCRIPT_FOLDER + "heroku_create.sh"
-STATIC_SCRIPT			= SCRIPT_FOLDER + "staticfiles_setup.sh"
+SCRIPT_FOLDER           = "bash_scripts/"
+INIT_SCRIPT             = SCRIPT_FOLDER + "init_setup.sh"
+CREATE_PROCFILE_SCRIPT  = SCRIPT_FOLDER + "create_procfile.sh"
+REQUIREMENTS_SCRIPT     = SCRIPT_FOLDER + "setup_requirements.sh"
+TEMPLATES_SCRIPT        = SCRIPT_FOLDER + "setup_templates.sh"
+SETTINGS_SCRIPT         = SCRIPT_FOLDER + "modify_settings.sh"
+GITIGNORE_SCRIPT        = SCRIPT_FOLDER + "finalize_gitignore.sh"
+GIT_SETUP_SCRIPT        = SCRIPT_FOLDER + "git_setup.sh"
+HEROKU_CREATE_SCRIPT    = SCRIPT_FOLDER + "heroku_create.sh"
+STATIC_SCRIPT           = SCRIPT_FOLDER + "staticfiles_setup.sh"
 
 # Settings replace text
-REPLACE_SECRET_KEY 		= "<REPLACE_SECRET_KEY>"
-REPLACE_PROJECT_NAME 	= "<REPLACE_PROJECT_NAME>"
-REPLACE_APP_NAME 		= "<REPLACE_APP_NAME>"
+REPLACE_SECRET_KEY      = "<REPLACE_SECRET_KEY>"
+REPLACE_PROJECT_NAME    = "<REPLACE_PROJECT_NAME>"
+REPLACE_APP_NAME        = "<REPLACE_APP_NAME>"
 
 # CDNs for popular js and css
-JQUERY_CDN			= "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
-BOOTSTRAP_CSS_CDN	= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
-BOOTSTRAP_JS_CDN	= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-FONT_AWESOME_CDN	= "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+JQUERY_CDN          = "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+BOOTSTRAP_CSS_CDN   = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+BOOTSTRAP_JS_CDN    = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+FONT_AWESOME_CDN    = "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
 
 
 # Create virtualenv and django project/app
@@ -73,10 +73,10 @@ def modify_settings():
     SECRET_KEY = ""
     # Obtain project secret key
     for line in lines:
-    	if "SECRET_KEY" in line:
-    		line = line.rstrip()
-    		SECRET_KEY = line.split(" = ")[1]
-    		break
+        if "SECRET_KEY" in line:
+            line = line.rstrip()
+            SECRET_KEY = line.split(" = ")[1]
+            break
 
     # Open new settings file and fill it in with project specs
     copy_file = open(COPY_BASE_SETTINGS, "r")
@@ -124,84 +124,84 @@ def modify_settings():
 
 # Create and write a Procfile for Heroku
 def create_procfile():
-	procfile = open(os.path.expanduser(PROJECT_ROOT + "Procfile"), "w+")
-	procfile.write("web: gunicorn " + PROJECT_NAME + ".wsgi")
-	procfile.close()
+    procfile = open(os.path.expanduser(PROJECT_ROOT + "Procfile"), "w+")
+    procfile.write("web: gunicorn " + PROJECT_NAME + ".wsgi")
+    procfile.close()
 
 # Modify wsgi to include dj_static for serving static files in production
 def modify_wsgi():
-	wsgi_file = open(os.path.expanduser(PROJECT_PATH + "wsgi.py"), "w")
-	copy_file = open(COPY_WSGI, "r")
-	wsgi_file.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
-	copy_file.close()
-	wsgi_file.close()
+    wsgi_file = open(os.path.expanduser(PROJECT_PATH + "wsgi.py"), "w")
+    copy_file = open(COPY_WSGI, "r")
+    wsgi_file.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
+    copy_file.close()
+    wsgi_file.close()
 
 # Create a gitignore file
 def create_gitignore():
-	gitignore = open(os.path.expanduser(PROJECT_ROOT + ORIGINAL_GITIGNORE), "w+")
-	copy_file = open(GITIGNORE_SAMPLE, "r")
-	gitignore.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
-	command = "source " + GITIGNORE_SCRIPT + " " + PROJECT_ROOT + " " + ORIGINAL_GITIGNORE
-	subprocess.call(command, shell=True)
-	copy_file.close()
-	gitignore.close()
+    gitignore = open(os.path.expanduser(PROJECT_ROOT + ORIGINAL_GITIGNORE), "w+")
+    copy_file = open(GITIGNORE_SAMPLE, "r")
+    gitignore.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
+    command = "source " + GITIGNORE_SCRIPT + " " + PROJECT_ROOT + " " + ORIGINAL_GITIGNORE
+    subprocess.call(command, shell=True)
+    copy_file.close()
+    gitignore.close()
 
 # Freeze project dependencies into requirements.txt
 def setup_requirements():
-	command = "source " + REQUIREMENTS_SCRIPT + " " + VENV_ROOT + " " + PROJECT_ROOT
-	subprocess.call(command, shell=True)
+    command = "source " + REQUIREMENTS_SCRIPT + " " + VENV_ROOT + " " + PROJECT_ROOT
+    subprocess.call(command, shell=True)
 
 # Create templates directory and create initial home.html template
 def create_templates():
-	command = "source " + TEMPLATES_SCRIPT + " " + PROJECT_ROOT
-	subprocess.call(command, shell=True)
+    command = "source " + TEMPLATES_SCRIPT + " " + PROJECT_ROOT
+    subprocess.call(command, shell=True)
 
 # Setup static directory and subdirectories
 def setup_static():
-	command = "source " + STATIC_SCRIPT + " " + APP_PATH
-	subprocess.call(command, shell=True)
+    command = "source " + STATIC_SCRIPT + " " + APP_PATH
+    subprocess.call(command, shell=True)
 
 # Add new views to views.py
 def add_views():
-	views_file = open(os.path.expanduser(APP_PATH + "views.py"), "w")
-	copy_file = open(COPY_VIEWS, "r")
-	views_file.write(copy_file.read())
-	copy_file.close()
-	views_file.close()
+    views_file = open(os.path.expanduser(APP_PATH + "views.py"), "w")
+    copy_file = open(COPY_VIEWS, "r")
+    views_file.write(copy_file.read())
+    copy_file.close()
+    views_file.close()
 	
 # Add new urls to urls.py
 def add_urls():
-	urls_file = open(os.path.expanduser(PROJECT_PATH + "urls.py"), "w")
-	copy_file = open(COPY_URLS, "r")
-	urls_file.write(copy_file.read().replace(REPLACE_APP_NAME, APP_NAME))
-	copy_file.close()
-	urls_file.close()
+    urls_file = open(os.path.expanduser(PROJECT_PATH + "urls.py"), "w")
+    copy_file = open(COPY_URLS, "r")
+    urls_file.write(copy_file.read().replace(REPLACE_APP_NAME, APP_NAME))
+    copy_file.close()
+    urls_file.close()
 
 # Initialize git repository, add files, and make first commit
 def setup_git():
-	command = "source " + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
-	subprocess.call(command, shell=True)
+    command = "source " + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
+    subprocess.call(command, shell=True)
 
 # Create a heroku app and deploy using git
 def heroku_create():
-	command = "source " + HEROKU_CREATE_SCRIPT + " " + PROJECT_ROOT
-	subprocess.call(command, shell=True)
+    command = "source " + HEROKU_CREATE_SCRIPT + " " + PROJECT_ROOT
+    subprocess.call(command, shell=True)
 
 def main():
-	print "Setting things up."
-	initsetup()
-	modify_settings()
-	create_procfile()
-	modify_wsgi()
-	setup_requirements()
-	create_templates()
-	setup_static()
-	add_views()
-	add_urls()
-	create_gitignore()
-	setup_git()
-	heroku_create()
-	print "Done."
+    print "Setting things up."
+    initsetup()
+    modify_settings()
+    create_procfile()
+    modify_wsgi()
+    setup_requirements()
+    create_templates()
+    setup_static()
+    add_views()
+    add_urls()
+    create_gitignore()
+    setup_git()
+    heroku_create()
+    print "Done."
 
 if __name__ == "__main__":
     main()
