@@ -1,4 +1,4 @@
 cd $1
 mkdir templates
 cd templates
-> home.html
+printf "It worked!" > home.html
