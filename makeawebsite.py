@@ -43,6 +43,7 @@ REQUIREMENTS_SCRIPT 	= SCRIPT_FOLDER + "setup_requirements.sh"
 TEMPLATES_SCRIPT 		= SCRIPT_FOLDER + "setup_templates.sh"
 SETTINGS_SCRIPT			= SCRIPT_FOLDER + "modify_settings.sh"
 GITIGNORE_SCRIPT		= SCRIPT_FOLDER + "finalize_gitignore.sh"
+GIT_SETUP_SCRIPT		= SCRIPT_FOLDER + "git_setup.sh"
 
 # Settings replace text
 REPLACE_SECRET_KEY 		= "<REPLACE_SECRET_KEY>"
@@ -95,12 +96,16 @@ def modify_settings():
 	
 	# Write production settings file
 	production_settings_file = open(os.path.expanduser(SETTINGS_PATH + PRODUCTION_SETTINGS_FNAME), "w")
-	production_settings_file.write(open(COPY_PRODUCTION_SETTINGS, "r").read())
+	copy_file = open(COPY_PRODUCTION_SETTINGS, "r")
+	production_settings_file.write(copy_file.read())
+	copy_file.close()
 	production_settings_file.close()
 
 	# Write __init__.py file
 	init_file = open(os.path.expanduser(SETTINGS_PATH + "__init__.py"), "w")
-	init_file.write(open(COPY_INIT_SETTINGS, "r").read())
+	copy_file = open(COPY_INIT_SETTINGS, "r")
+	init_file.write(copy_file.read())
+	copy_file.close()
 	init_file.close()
 
 # Create and write a Procfile for Heroku
@@ -112,14 +117,20 @@ def create_procfile():
 # Modify wsgi to include dj_static for serving static files in production
 def modify_wsgi():
 	wsgi_file = open(os.path.expanduser(PROJECT_PATH + "wsgi.py"), "w")
-	wsgi_file.write(open(COPY_WSGI, "r").read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
+	copy_file = open(COPY_WSGI, "r")
+	wsgi_file.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
+	copy_file.close()
+	wsgi_file.close()
 
 # Create a gitignore file
 def create_gitignore():
 	gitignore = open(os.path.expanduser(PROJECT_ROOT + ORIGINAL_GITIGNORE), "w+")
-	gitignore.write(open(GITIGNORE_SAMPLE, "r").read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
+	copy_file = open(GITIGNORE_SAMPLE, "r")
+	gitignore.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
 	command = "source " + GITIGNORE_SCRIPT + " " + PROJECT_ROOT + " " + ORIGINAL_GITIGNORE
 	subprocess.call(command, shell=True)
+	copy_file.close()
+	gitignore.close()
 
 # Freeze project dependencies into requirements.txt
 def setup_requirements():
@@ -133,22 +144,35 @@ def create_templates():
 
 # Add new views to views.py
 def add_views():
-	return
-
+	views_file = open(os.path.expanduser(APP_PATH + "views.py"), "w")
+	copy_file = open(COPY_VIEWS, "r")
+	views_file.write(copy_file.read())
+	copy_file.close()
+	views_file.close()
+	
 # Add new urls to urls.py
 def add_urls():
-	return
+	urls_file = open(os.path.expanduser(PROJECT_PATH + "urls.py"), "w")
+	copy_file = open(COPY_URLS, "r")
+	urls_file.write(copy_file.read().replace(REPLACE_APP_NAME, APP_NAME))
+	copy_file.close()
+	urls_file.close()
+
+def setup_git():
+	command = "source " + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
+	subprocess.call(command, shell=True)
 
 def main():
 	print "Setting things up."
 	initsetup()
 	modify_settings()
 	create_procfile()
-	modify_wsgi
+	modify_wsgi()
 	setup_requirements()
 	create_templates()
 	add_views()
 	add_urls()
 	create_gitignore()
+	setup_git()
 	print "Done."
 main()
