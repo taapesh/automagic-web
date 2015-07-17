@@ -27,6 +27,7 @@ COPY_WSGI					= COPY_FOLDER + "wsgi.txt"
 COPY_VIEWS 					= COPY_FOLDER + "views.txt"
 COPY_URLS 					= COPY_FOLDER + "urls.txt"
 GITIGNORE_SAMPLE 			= COPY_FOLDER + "gitignore_sample.txt"
+ORIGINAL_GITIGNORE			= "gitignore.txt"
 
 # Names of settings files in django project
 DJANGO_SETTINGS_FNAME 		= "settings.py"
@@ -41,6 +42,7 @@ CREATE_PROCFILE_SCRIPT 	= SCRIPT_FOLDER + "create_procfile.sh"
 REQUIREMENTS_SCRIPT 	= SCRIPT_FOLDER + "setup_requirements.sh"
 TEMPLATES_SCRIPT 		= SCRIPT_FOLDER + "setup_templates.sh"
 SETTINGS_SCRIPT			= SCRIPT_FOLDER + "modify_settings.sh"
+GITIGNORE_SCRIPT		= SCRIPT_FOLDER + "finalize_gitignore.sh"
 
 # Settings replace text
 REPLACE_SECRET_KEY 		= "<REPLACE_SECRET_KEY>"
@@ -103,17 +105,21 @@ def modify_settings():
 
 # Create and write a Procfile for Heroku
 def create_procfile():
-	f = open(os.path.expanduser(PROJECT_ROOT + "Procfile"), "w+")
-	f.write("web: gunicorn " + APP_NAME + ".wsgi")
-	f.close()
+	procfile = open(os.path.expanduser(PROJECT_ROOT + "Procfile"), "w+")
+	procfile.write("web: gunicorn " + APP_NAME + ".wsgi")
+	procfile.close()
 
 # Modify wsgi to include dj_static for serving static files in production
 def modify_wsgi():
 	wsgi_file = open(os.path.expanduser(PROJECT_PATH + "wsgi.py"), "w")
 	wsgi_file.write(open(COPY_WSGI, "r").read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
 
+# Create a gitignore file
 def create_gitignore():
-	return
+	gitignore = open(os.path.expanduser(PROJECT_ROOT + ORIGINAL_GITIGNORE), "w+")
+	gitignore.write(open(GITIGNORE_SAMPLE, "r").read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
+	command = "source " + GITIGNORE_SCRIPT + " " + PROJECT_ROOT + " " + ORIGINAL_GITIGNORE
+	subprocess.call(command, shell=True)
 
 # Freeze project dependencies into requirements.txt
 def setup_requirements():
