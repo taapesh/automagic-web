@@ -8,12 +8,12 @@ import subprocess
 # Testing
 DEMO            = True
 VENV_NAME       = "testvenv"
-PROJECT_NAME    = "proj"
-APP_NAME        = "app"
+PROJECT_NAME    = "proj2"
+APP_NAME        = "app2"
 
 # Project paths
-VENV_ROOT           = "~/Desktop/" + VENV_NAME + "/"
-PROJECT_ROOT        = "~/Desktop/" + VENV_NAME + "/" + PROJECT_NAME + "/"
+VENV_ROOT           = "~/" + VENV_NAME + "/"
+PROJECT_ROOT        = "~/" + VENV_NAME + "/" + PROJECT_NAME + "/"
 PROJECT_PATH        = PROJECT_ROOT + PROJECT_NAME + "/"
 APP_PATH            = PROJECT_ROOT + APP_NAME + "/"
 SETTINGS_PATH       = PROJECT_PATH + "settings/"
@@ -41,6 +41,7 @@ PRODUCTION_SETTINGS_FNAME   = "production_settings.py"
 
 # Script names
 SCRIPT_FOLDER           = "bash_scripts/"
+BASH_COMMAND            = "bash ./"
 INIT_SCRIPT             = SCRIPT_FOLDER + "init_setup.sh"
 CREATE_PROCFILE_SCRIPT  = SCRIPT_FOLDER + "create_procfile.sh"
 REQUIREMENTS_SCRIPT     = SCRIPT_FOLDER + "setup_requirements.sh"
@@ -51,6 +52,9 @@ GIT_SETUP_SCRIPT        = SCRIPT_FOLDER + "git_setup.sh"
 HEROKU_CREATE_SCRIPT    = SCRIPT_FOLDER + "heroku_create.sh"
 STATIC_SCRIPT           = SCRIPT_FOLDER + "staticfiles_setup.sh"
 COPY_STATIC_SCRIPT      = SCRIPT_FOLDER + "copy_static.sh"
+INIT_VENV_SCRIPT        = SCRIPT_FOLDER + "init_venv.sh"
+START_DJANGO_SCRIPT     = SCRIPT_FOLDER + "start_django.sh"
+CLEANUP_SCRIPT          = SCRIPT_FOLDER + "cleanup.sh"
 
 # Settings replace text
 REPLACE_SECRET_KEY      = "<REPLACE_SECRET_KEY>"
@@ -64,9 +68,14 @@ BOOTSTRAP_JS_CDN    = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootst
 FONT_AWESOME_CDN    = "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
 
 
-def initsetup():
-    """ Create virtualenv and start django project + app """
-    command = "source " + INIT_SCRIPT + " " + VENV_NAME + " " + PROJECT_NAME + " " + APP_NAME
+def init_venv():
+    """ Create virtualenv and activate it """
+    command = BASH_COMMAND + INIT_VENV_SCRIPT + " " + VENV_NAME
+    subprocess.call(command, shell=True)
+
+def startdjango():
+    """ Start django project + app """
+    command = BASH_COMMAND + START_DJANGO_SCRIPT + " " + PROJECT_NAME + " " APP_NAME
     subprocess.call(command, shell=True)
 
 def modify_settings():
@@ -97,7 +106,7 @@ def modify_settings():
     settings_file.close()
 
     # Build command to setup new settings directory
-    command = "source " + SETTINGS_SCRIPT + " " + PROJECT_PATH + " " + BASE_SETTINGS_FNAME + " " + LOCAL_SETTINGS_FNAME + " " + PRODUCTION_SETTINGS_FNAME
+    command = BASH_COMMAND + SETTINGS_SCRIPT + " " + PROJECT_PATH + " " + BASE_SETTINGS_FNAME + " " + LOCAL_SETTINGS_FNAME + " " + PRODUCTION_SETTINGS_FNAME
     subprocess.call(command, shell=True)
 
     # Write base settings file
@@ -146,28 +155,28 @@ def create_gitignore():
     gitignore = open(os.path.expanduser(PROJECT_ROOT + ORIGINAL_GITIGNORE), "w+")
     copy_file = open(GITIGNORE_SAMPLE, "r")
     gitignore.write(copy_file.read().replace(REPLACE_PROJECT_NAME, PROJECT_NAME))
-    command = "source " + GITIGNORE_SCRIPT + " " + PROJECT_ROOT + " " + ORIGINAL_GITIGNORE
+    command = BASH_COMMAND + GITIGNORE_SCRIPT + " " + PROJECT_ROOT + " " + ORIGINAL_GITIGNORE
     subprocess.call(command, shell=True)
     copy_file.close()
     gitignore.close()
 
 def setup_requirements():
     """ Freeze project dependencies into requirements.txt """
-    command = "source " + REQUIREMENTS_SCRIPT + " " + VENV_ROOT + " " + PROJECT_ROOT
+    command = BASH_COMMAND + REQUIREMENTS_SCRIPT + " " + VENV_ROOT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
 def create_templates():
     """ Create templates directory and create initial home.html template """
-    command = "source " + TEMPLATES_SCRIPT + " " + PROJECT_ROOT
+    command = BASH_COMMAND + TEMPLATES_SCRIPT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
 def setup_static():
     """ Setup static directory and subdirectories """
-    command = "source " + STATIC_SCRIPT + " " + APP_PATH
+    command = BASH_COMMAND + STATIC_SCRIPT + " " + APP_PATH
     subprocess.call(command, shell=True)
 
     if DEMO:
-        command = "source " + COPY_STATIC_SCRIPT + " " + COPY_STATIC_FOLDER + " " + STATIC_PATH + " " + COPY_TEMPLATES_FOLDER + " " + TEMPLATES_PATH
+        command = BASH_COMMAND + COPY_STATIC_SCRIPT + " " + COPY_STATIC_FOLDER + " " + STATIC_PATH + " " + COPY_TEMPLATES_FOLDER + " " + TEMPLATES_PATH
         subprocess.call(command, shell=True)
 
 def add_views():
@@ -188,17 +197,18 @@ def add_urls():
 
 def setup_git():
     """ Initialize git repository, add files, and make first commit """
-    command = "source " + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
+    command = BASH_COMMAND + GIT_SETUP_SCRIPT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
 def heroku_create():
     """ Create a heroku app and deploy using git """
-    command = "source " + HEROKU_CREATE_SCRIPT + " " + PROJECT_ROOT
+    command = BASH_COMMAND + HEROKU_CREATE_SCRIPT + " " + PROJECT_ROOT
     subprocess.call(command, shell=True)
 
 def main():
     print "Setting things up."
-    initsetup()
+    init_venv()
+    startdjango()
     modify_settings()
     create_procfile()
     modify_wsgi()
