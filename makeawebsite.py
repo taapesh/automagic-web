@@ -20,13 +20,13 @@ SETTINGS_PATH	= PROJECT_PATH + "settings/"
 
 # File names to copy
 COPY_FOLDER					= "copy_files/"
-COPY_BASE_SETTINGS 			= COPY_FOLDER + "base_settings.txt"
-COPY_PRODUCTION_SETTINGS 	= COPY_FOLDER + "production_settings.txt"
-COPY_INIT_SETTINGS 			= COPY_FOLDER + "init_settings.txt"
+COPY_BASE_SETTINGS			= COPY_FOLDER + "base_settings.txt"
+COPY_PRODUCTION_SETTINGS	= COPY_FOLDER + "production_settings.txt"
+COPY_INIT_SETTINGS			= COPY_FOLDER + "init_settings.txt"
 COPY_WSGI					= COPY_FOLDER + "wsgi.txt"
-COPY_VIEWS 					= COPY_FOLDER + "views.txt"
-COPY_URLS 					= COPY_FOLDER + "urls.txt"
-GITIGNORE_SAMPLE 			= COPY_FOLDER + "gitignore_sample.txt"
+COPY_VIEWS					= COPY_FOLDER + "views.txt"
+COPY_URLS					= COPY_FOLDER + "urls.txt"
+GITIGNORE_SAMPLE			= COPY_FOLDER + "gitignore_sample.txt"
 ORIGINAL_GITIGNORE			= "gitignore.txt"
 
 # Names of settings files in django project
