@@ -73,9 +73,9 @@ def init_venv():
     command = BASH_COMMAND + INIT_VENV_SCRIPT + " " + VENV_NAME
     subprocess.call(command, shell=True)
 
-def startdjango():
+def start_django():
     """ Start django project + app """
-    command = BASH_COMMAND + START_DJANGO_SCRIPT + " " + PROJECT_NAME + " " APP_NAME
+    command = BASH_COMMAND + START_DJANGO_SCRIPT + " " + PROJECT_NAME + " "  + APP_NAME + " " + VENV_NAME
     subprocess.call(command, shell=True)
 
 def modify_settings():
@@ -208,7 +208,7 @@ def heroku_create():
 def main():
     print "Setting things up."
     init_venv()
-    startdjango()
+    start_django()
     modify_settings()
     create_procfile()
     modify_wsgi()
