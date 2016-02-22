@@ -63,6 +63,7 @@ BOOTSTRAP_CSS_CDN   = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/boots
 BOOTSTRAP_JS_CDN    = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
 FONT_AWESOME_CDN    = "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
 
+url = ""
 
 def initsetup():
     """ Create virtualenv and start django project + app """

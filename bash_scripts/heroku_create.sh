@@ -6,3 +6,4 @@ heroku ps:scale web=1
 heroku ps
 heroku pg:info
 heroku config
+heroku apps:info
