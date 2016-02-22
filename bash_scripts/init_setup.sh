@@ -1,11 +1,10 @@
 # initialize virtualenv and create django project and app
 
 # initialize virtualenv
-cd ~
-cd Desktop
-virtualenv $1		# create virtualenv
-cd $1				# cd into virtualenv directory
-source bin/activate			# activate virtualenv
+cd ~/Desktop
+virtualenv $1           # create virtualenv
+cd $1                   # cd into virtualenv directory
+source bin/activate     # activate virtualenv
 
 # dependencies
 pip install django-toolbelt		# install dependencies
